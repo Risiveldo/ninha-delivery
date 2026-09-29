@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ninha Delivery - Sistema de Pedidos</title>
+    <!-- Fonte Moderna do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #D1111A;
+            --primary-hover: #B50D15;
+            --primary-light: #FFF1F2;
+            --primary-border: #FECDD3;
+            --accent: #F59E0B;
+            --accent-hover: #D97706;
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius-md: 10px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* HEADER & LOGO */
+        .brand-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .logo-wrapper {
+            display: inline-block;
+            padding: 6px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 12px;
+            transition: transform 0.2s;
+        }
+
+        .logo-wrapper:hover {
+            transform: scale(1.02);
+        }
+
+        .logo-wrapper img {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+        }
+
+        .brand-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .brand-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* SEÇÕES & CARDS */
+        .card-section {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .section-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* FORMULÁRIO */
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .form-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="number"] {
+            width: 100%;
+            padding: 11px 14px;
+            background-color: #F8FAFC;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        input:hover {
+            border-color: #CBD5E1;
+            background-color: #FFFFFF;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(209, 17, 26, 0.12);
+        }
+
+        /* SEÇÃO DE ITENS (PDV) */
+        .adicionar-box {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            background: #F1F5F9;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+        }
+
+        .btn-add {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 11px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .btn-add:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-add:active {
+            transform: scale(0.97);
+        }
+
+        /* LISTA DE ITENS NA TELA */
+        #lista-itens-tela {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .item-lista {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #FFFFFF;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .item-lista-qtd {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 6px;
+        }
+
+        .item-lista-preco {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #334155;
+        }
+
+        .btn-remover {
+            background-color: #FEE2E2;
+            color: #DC2626;
+            border: none;
+            border-radius: 5px;
+            width: 24px;
+            height: 24px;
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-remover:hover {
+            background-color: #DC2626;
+            color: white;
+        }
+
+        /* OPÇÕES DE PAGAMENTO */
+        .pagamento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .pagamento-opcao {
+            position: relative;
+        }
+
+        .pagamento-opcao input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .pagamento-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 10px;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 13px;
+            color: #475569;
+            background-color: #F8FAFC;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagamento-label:hover {
+            border-color: #CBD5E1;
+            background-color: #FFFFFF;
+        }
+
+        .pagamento-opcao input[type="radio"]:checked + .pagamento-label {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+
+        /* CAMPO DE TROCO */
+        #div-troco {
+            display: none;
+            margin-top: 12px;
+            background: #FFFBEB;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px dashed #FDE68A;
+        }
+
+        /* RESUMO DE VALORES */
+        .resumo-card {
+            background: linear-gradient(135deg, #1E293B, #0F172A);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .resumo-linha {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #94A3B8;
+            margin-bottom: 6px;
+        }
+
+        .resumo-linha.total {
+            border-top: 1px dashed #334155;
+            padding-top: 10px;
+            margin-top: 8px;
+            margin-bottom: 0;
+            font-size: 18px;
+            font-weight: 800;
+            color: #FFFFFF;
+        }
+
+        .resumo-linha.total span:last-child {
+            color: #34D399;
+        }
+
+        /* BOTÕES DE AÇÃO */
+        .botoes-acao {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-principal {
+            flex: 2;
+            padding: 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(209, 17, 26, 0.3);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-principal:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(209, 17, 26, 0.4);
+        }
+
+        .btn-principal:active {
+            transform: translateY(0);
+        }
+
+        .btn-secundario {
+            flex: 1;
+            padding: 15px;
+            background-color: #FFFFFF;
+            color: #475569;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secundario:hover {
+            background-color: #F1F5F9;
+            border-color: #CBD5E1;
+            color: var(--text-main);
+        }
+
+        /* TOTALMENTE OCULTO NA TELA DO NAVEGADOR */
+        #cupom-gerado {
+            display: none !important;
+        }
+
+        /* ============================================================
+           CSS EXCLUSIVO PARA IMPRESSÃO TÉRMICA (80mm / 58mm)
+           ============================================================ */
+        @media print {
+            @page {
+                size: auto;
+                margin: 0mm;
+            }
+
+            body {
+                background-color: #FFF !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .esconder-impressao {
+                display: none !important;
+            }
+            
+            #cupom-gerado {
+                display: block !important; /* Visível unicamente na impressora */
+                width: 72mm;
+                max-width: 100%;
+                margin: 0 auto;
+                padding: 5mm 3mm 25mm 3mm;
+                box-sizing: border-box;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 12px;
+                line-height: 1.25;
+                color: #000;
+            }
+
+            .linha-cupom {
+                margin: 2px 0;
+                word-wrap: break-word;
+            }
+
+            .divisor {
+                border-top: 1px dashed #000;
+                margin: 6px 0;
+            }
+            
+            .item-cupom {
+                display: flex;
+                justify-content: space-between;
+                margin: 3px 0;
+            }
+
+            .bold {
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper esconder-impressao">
+        <!-- HEADER COM A LOGO -->
+        <header class="brand-header">
+            <div class="logo-wrapper">
+                <img src="WhatsApp Image 2026-09-28 at 20.57.02.jpeg" alt="Logo Ninha Delivery">
+            </div>
+            <h1 class="brand-title">Ninha Delivery</h1>
+            <p class="brand-subtitle">Frente de Caixa & Emissão de Pedidos</p>
+        </header>
+
+        <form id="form-pedido" onsubmit="event.preventDefault(); gerarCupom();">
+            
+            <!-- SEÇÃO 1: CLIENTE -->
+            <section class="card-section">
+                <div class="section-header">
+                    <span class="section-icon">👤</span>
+                    <span class="section-title">Dados do Cliente</span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label for="cliente">Nome Completo *</label>
+                        <input type="text" id="cliente" class="navegavel" required placeholder="Ex: Maria Eduarda">
+                    </div>
+                    <div class="form-group" style="flex: 1.5;">
+                        <label for="telefone">WhatsApp *</label>
+                        <input type="tel" id="telefone" class="navegavel" required maxlength="15" placeholder="(81) 90000-0000" oninput="mascaraTelefone(this)">
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEÇÃO 2: ENDEREÇO -->
+            <section class="card-section">
+                <div class="section-header">
+                    <span class="section-icon">📍</span>
+                    <span class="section-title">Entrega</span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="flex: 3;">
+                        <label for="rua">Rua / Avenida *</label>
+                        <input type="text" id="rua" class="navegavel" required placeholder="Ex: Rua das Flores">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="numero">Nº *</label>
+                        <input type="text" id="numero" class="navegavel" required placeholder="123">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1.5;">
+                        <label for="bairro">Bairro *</label>
+                        <input type="text" id="bairro" class="navegavel" required placeholder="Ex: Centro">
+                    </div>
+                    <div class="form-group" style="flex: 2;">
+                        <label for="referencia">Ponto de Referência</label>
+                        <input type="text" id="referencia" class="navegavel" placeholder="Ex: Próximo à padaria">
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEÇÃO 3: ITENS DO PEDIDO -->
+            <section class="card-section">
+                <div class="section-header">
+                    <span class="section-icon">🍔</span>
+                    <span class="section-title">Itens do Pedido</span>
+                </div>
+
+                <div class="adicionar-box">
+                    <div class="form-group" style="flex: 0.8;">
+                        <label for="qtd-produto">Qtd</label>
+                        <input type="number" id="qtd-produto" value="1" min="1">
+                    </div>
+                    <div class="form-group" style="flex: 2.5;">
+                        <label for="nome-produto">Produto / Item</label>
+                        <input type="text" id="nome-produto" placeholder="Ex: X-Burger Completo">
+                    </div>
+                    <div class="form-group" style="flex: 1.4;">
+                        <label for="valor-produto">Unit. (R$)</label>
+                        <input type="number" id="valor-produto" placeholder="0,00" step="0.01" min="0">
+                    </div>
+                    <button type="button" class="btn-add" onclick="adicionarItem()">+ ADD</button>
+                </div>
+
+                <ul id="lista-itens-tela"></ul>
+            </section>
+
+            <!-- SEÇÃO 4: PAGAMENTO & TAXA -->
+            <section class="card-section">
+                <div class="section-header">
+                    <span class="section-icon">💳</span>
+                    <span class="section-title">Pagamento & Taxa</span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taxa">Taxa de Entrega (R$)</label>
+                        <input type="number" id="taxa" class="navegavel" step="0.01" min="0" placeholder="0.00" oninput="atualizarResumoValores()">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 6px;">
+                    <label>Forma de Pagamento *</label>
+                    <div class="pagamento-grid">
+                        <div class="pagamento-opcao">
+                            <input type="radio" id="pag-pix" name="forma_pagamento" value="PIX" onchange="tratarTroco()">
+                            <label for="pag-pix" class="pagamento-label">📱 PIX</label>
+                        </div>
+                        <div class="pagamento-opcao">
+                            <input type="radio" id="pag-dinheiro" name="forma_pagamento" value="Dinheiro" onchange="tratarTroco()">
+                            <label for="pag-dinheiro" class="pagamento-label">💵 Dinheiro</label>
+                        </div>
+                        <div class="pagamento-opcao">
+                            <input type="radio" id="pag-credito" name="forma_pagamento" value="Cartão - Crédito" onchange="tratarTroco()">
+                            <label for="pag-credito" class="pagamento-label">💳 Crédito</label>
+                        </div>
+                        <div class="pagamento-opcao">
+                            <input type="radio" id="pag-debito" name="forma_pagamento" value="Cartão - Débito" onchange="tratarTroco()">
+                            <label for="pag-debito" class="pagamento-label">💳 Débito</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="div-troco">
+                    <label for="troco" style="color: #92400E; font-weight: 700;">Precisa de troco para quanto? (R$)</label>
+                    <input type="number" id="troco" step="0.01" placeholder="Ex: 50.00" style="background: #FFF;">
+                </div>
+            </section>
+
+            <!-- RESUMO FINANCEIRO CARD -->
+            <div class="resumo-card">
+                <div class="resumo-linha">
+                    <span>Subtotal dos Itens:</span>
+                    <span id="resumo-subtotal">R$ 0,00</span>
+                </div>
+                <div class="resumo-linha">
+                    <span>Taxa de Entrega:</span>
+                    <span id="resumo-taxa">R$ 0,00</span>
+                </div>
+                <div class="resumo-linha total">
+                    <span>TOTAL A PAGAR:</span>
+                    <span id="resumo-total">R$ 0,00</span>
+                </div>
+            </div>
+
+            <!-- BOTÕES -->
+            <div class="botoes-acao">
+                <button type="submit" id="btn-imprimir" class="btn-principal">
+                    🖨️ Imprimir Pedido
+                </button>
+                <button type="button" class="btn-secundario" onclick="limparTudo()">
+                    Novo Pedido
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- CUPOM OTIMIZADO PARA IMPRESSORA TÉRMICA -->
+    <div id="cupom-gerado">
+        <div style="text-align: center; font-weight: bold; font-size: 15px; margin-bottom: 2px;">
+            NINHA DELIVERY
+        </div>
+        <div style="text-align: center; font-size: 11px;">
+            WhatsApp: (81) 99463-2375<br>
+            Instagram: @ninha.delivery
+        </div>
+        
+        <div class="divisor"></div>
+        <div class="linha-cupom"><span class="bold">Data/Hora:</span> <span id="cupom-data-hora"></span></div>
+        <div class="linha-cupom"><span class="bold">Cliente:</span> <span id="cupom-cliente"></span></div>
+        <div class="linha-cupom"><span class="bold">WhatsApp:</span> <span id="cupom-telefone"></span></div>
+        
+        <div class="divisor"></div>
+        <div style="font-weight: bold; text-align: center; margin-bottom: 2px;">--- ENTREGA ---</div>
+        <div class="linha-cupom"><span id="cupom-endereco-completo"></span></div>
+        <div class="linha-cupom"><span class="bold">Ref:</span> <span id="cupom-referencia"></span></div>
+        
+        <div class="divisor"></div>
+        <div style="font-weight: bold; text-align: center; margin-bottom: 2px;">--- ITENS ---</div>
+        <div id="cupom-lista-itens"></div> 
+        
+        <div class="divisor"></div>
+        <div class="linha-cupom"><span class="bold">Pagamento:</span> <span id="cupom-pagamento"></span></div>
+        <div class="linha-cupom" id="linha-cupom-troco"><span class="bold">Troco p/:</span> R$ <span id="cupom-troco"></span></div>
+        <div class="linha-cupom">Taxa Entrega: R$ <span id="cupom-taxa"></span></div>
+        <div class="linha-cupom bold" style="font-size: 14px; margin-top: 4px;">TOTAL: R$ <span id="cupom-total"></span></div>
+        
+        <div class="divisor"></div>
+        <div style="text-align: center; font-size: 11px; margin-top: 10px;">
+            Sabor que a gente ama,<br>no conforto da sua casa!
+        </div>
+    </div>
+
+    <script>
+        let carrinho = [];
+
+        function mascaraTelefone(input) {
+            let valor = input.value.replace(/\D/g, '');
+            if (valor.length > 11) valor = valor.slice(0, 11);
+            
+            if (valor.length > 2) {
+                valor = `(${valor.substring(0, 2)}) ${valor.substring(2)}`;
+            }
+            if (valor.length > 10) {
+                valor = `${valor.substring(0, 10)}-${valor.substring(10)}`;
+            }
+            input.value = valor;
+        }
+
+        function formatarMoeda(valor) {
+            return parseFloat(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function tratarTroco() {
+            const pagamentoSelecionado = document.querySelector('input[name="forma_pagamento"]:checked')?.value;
+            const divTroco = document.getElementById('div-troco');
+            const inputTroco = document.getElementById('troco');
+            
+            if (pagamentoSelecionado === 'Dinheiro') {
+                divTroco.style.display = 'block';
+                inputTroco.focus();
+            } else {
+                divTroco.style.display = 'none';
+                inputTroco.value = '';
+                document.getElementById('btn-imprimir').focus();
+            }
+        }
+
+        const camposNavegaveis = Array.from(document.querySelectorAll('.navegavel'));
+        
+        camposNavegaveis.forEach((campo, index) => {
+            campo.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    
+                    if (campo.id === 'referencia') {
+                        document.getElementById('qtd-produto').focus();
+                        return;
+                    }
+                    
+                    if (campo.id === 'taxa') {
+                        document.getElementById('pag-pix').focus();
+                        return;
+                    }
+
+                    const proximo = camposNavegaveis[index + 1];
+                    if (proximo) proximo.focus();
+                }
+            });
+        });
+
+        document.getElementById('troco').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('btn-imprimir').focus();
+            }
+        });
+
+        const inputQtd = document.getElementById('qtd-produto');
+        const inputNome = document.getElementById('nome-produto');
+        const inputValor = document.getElementById('valor-produto');
+
+        inputQtd.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                inputNome.focus();
+            }
+        });
+
+        inputNome.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (!inputNome.value.trim()) {
+                    document.getElementById('taxa').focus();
+                } else {
+                    inputValor.focus();
+                }
+            }
+        });
+
+        inputValor.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                adicionarItem();
+            }
+        });
+
+        function adicionarItem() {
+            const qtd = parseInt(inputQtd.value) || 1;
+            const nome = inputNome.value.trim();
+            const valorUn = parseFloat(inputValor.value);
+
+            if (!nome || isNaN(valorUn)) {
+                alert('Preencha o nome do produto e um valor válido!');
+                return;
+            }
+
+            const valorTotalItem = qtd * valorUn;
+            
+            carrinho.push({ qtd: qtd, nome: nome, valorUn: valorUn, valorTotal: valorTotalItem });
+            
+            inputQtd.value = '1';
+            inputNome.value = '';
+            inputValor.value = '';
+            inputNome.focus();
+            
+            atualizarTelaItens();
+        }
+
+        function removerItem(index) {
+            carrinho.splice(index, 1);
+            atualizarTelaItens();
+        }
+
+        function atualizarTelaItens() {
+            const lista = document.getElementById('lista-itens-tela');
+            lista.innerHTML = '';
+
+            carrinho.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'item-lista';
+                li.innerHTML = `
+                    <div>
+                        <span class="item-lista-qtd">${item.qtd}x</span>
+                        <span>${item.nome}</span>
+                    </div>
+                    <div class="item-lista-preco">
+                        <span>R$ ${formatarMoeda(item.valorTotal)}</span>
+                        <button type="button" class="btn-remover" title="Remover item" onclick="removerItem(${index})">✕</button>
+                    </div>
+                `;
+                lista.appendChild(li);
+            });
+
+            atualizarResumoValores();
+        }
+
+        function atualizarResumoValores() {
+            let subtotal = carrinho.reduce((acc, item) => acc + item.valorTotal, 0);
+            let taxa = parseFloat(document.getElementById('taxa').value) || 0;
+            let total = subtotal + taxa;
+            
+            document.getElementById('resumo-subtotal').innerText = `R$ ${formatarMoeda(subtotal)}`;
+            document.getElementById('resumo-taxa').innerText = `R$ ${formatarMoeda(taxa)}`;
+            document.getElementById('resumo-total').innerText = `R$ ${formatarMoeda(total)}`;
+        }
+
+        function gerarCupom() {
+            if (carrinho.length === 0) {
+                alert("Adicione pelo menos um item ao pedido!");
+                inputNome.focus();
+                return;
+            }
+
+            const pagamentoChecked = document.querySelector('input[name="forma_pagamento"]:checked');
+            if (!pagamentoChecked) {
+                alert("Selecione uma forma de pagamento!");
+                return;
+            }
+
+            const rua = document.getElementById('rua').value;
+            const numero = document.getElementById('numero').value;
+            const bairro = document.getElementById('bairro').value;
+            
+            const agora = new Date();
+            const dataHoraFormatada = agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('cupom-data-hora').innerText = dataHoraFormatada;
+
+            document.getElementById('cupom-cliente').innerText = document.getElementById('cliente').value;
+            document.getElementById('cupom-telefone').innerText = document.getElementById('telefone').value;
+            document.getElementById('cupom-endereco-completo').innerText = `${rua}, Nº ${numero} - ${bairro}`;
+            document.getElementById('cupom-referencia').innerText = document.getElementById('referencia').value || '-';
+            
+            const pagamento = pagamentoChecked.value;
+            document.getElementById('cupom-pagamento').innerText = pagamento;
+            
+            const trocoVal = document.getElementById('troco').value;
+            const linhaTroco = document.getElementById('linha-cupom-troco');
+            if (pagamento === 'Dinheiro' && trocoVal) {
+                linhaTroco.style.display = 'block';
+                document.getElementById('cupom-troco').innerText = formatarMoeda(trocoVal);
+            } else {
+                linhaTroco.style.display = 'none';
+            }
+
+            const cupomLista = document.getElementById('cupom-lista-itens');
+            cupomLista.innerHTML = '';
+            let subtotal = 0;
+            
+            carrinho.forEach(item => {
+                subtotal += item.valorTotal;
+                cupomLista.innerHTML += `
+                    <div class="item-cupom">
+                        <span>${item.qtd}x ${item.nome}</span>
+                        <span>R$ ${formatarMoeda(item.valorTotal)}</span>
+                    </div>
+                `;
+            });
+
+            const taxa = parseFloat(document.getElementById('taxa').value) || 0;
+            const totalFinal = subtotal + taxa;
+
+            document.getElementById('cupom-taxa').innerText = formatarMoeda(taxa);
+            document.getElementById('cupom-total').innerText = formatarMoeda(totalFinal);
+
+            // Não altera o display via JS para não vazar na tela; a regra @media print cuida disso sozinha.
+            setTimeout(() => {
+                window.print();
+            }, 150);
+        }
+
+        function limparTudo() {
+            if(confirm("Deseja zerar os dados e iniciar um novo pedido?")) {
+                carrinho = [];
+                document.getElementById('form-pedido').reset();
+                inputQtd.value = '1';
+                atualizarTelaItens();
+                document.getElementById('div-troco').style.display = 'none';
+                window.scrollTo(0, 0);
+                document.getElementById('cliente').focus();
+            }
+        }
+
+        window.onload = () => {
+            document.getElementById('cliente').focus();
+        };
+    </script>
+</body>
+</html>
