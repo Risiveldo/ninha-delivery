@@ -181,7 +181,7 @@
             box-shadow: 0 0 0 3px rgba(209, 17, 26, 0.12);
         }
 
-        /* SEÇÃO DE ITENS (PDV) */
+        /* SEÇÃO DE ITENS */
         .adicionar-box {
             display: flex;
             gap: 8px;
@@ -328,7 +328,7 @@
             border: 1px dashed #FDE68A;
         }
 
-        /* RESUMO DE VALORES */
+        /* RESUMO FINANCEIRO */
         .resumo-card {
             background: linear-gradient(135deg, #1E293B, #0F172A);
             color: white;
@@ -421,11 +421,11 @@
         }
 
         /* ============================================================
-           CSS EXCLUSIVO PARA IMPRESSÃO TÉRMICA (80mm / 58mm)
+           CSS PARA IMPRESSÃO EM MAQUINETAS DE CARTÃO / BOBINA 58MM
            ============================================================ */
         @media print {
             @page {
-                size: auto;
+                size: 58mm auto;
                 margin: 0mm;
             }
 
@@ -440,36 +440,49 @@
             }
             
             #cupom-gerado {
-                display: block !important; /* Visível unicamente na impressora */
-                width: 72mm;
-                max-width: 100%;
-                margin: 0 auto;
-                padding: 5mm 3mm 25mm 3mm;
-                box-sizing: border-box;
-                font-family: 'Courier New', Courier, monospace;
-                font-size: 12px;
-                line-height: 1.25;
-                color: #000;
+                display: block !important;
+                width: 48mm !important;
+                max-width: 48mm !important;
+                margin: 0 auto !important;
+                padding: 2mm 1mm 15mm 1mm !important;
+                box-sizing: border-box !important;
+                font-family: 'Courier New', Courier, monospace !important;
+                font-size: 11px !important;
+                line-height: 1.2 !important;
+                color: #000 !important;
+                font-weight: 800 !important;
             }
 
             .linha-cupom {
                 margin: 2px 0;
                 word-wrap: break-word;
+                font-weight: 800;
             }
 
             .divisor {
-                border-top: 1px dashed #000;
-                margin: 6px 0;
+                border-top: 1.5px dashed #000;
+                margin: 4px 0;
             }
             
             .item-cupom {
                 display: flex;
                 justify-content: space-between;
+                align-items: flex-start;
                 margin: 3px 0;
+                font-weight: 800;
+            }
+
+            .item-cupom span:first-child {
+                flex: 1;
+                padding-right: 4px;
+            }
+
+            .item-cupom span:last-child {
+                white-space: nowrap;
             }
 
             .bold {
-                font-weight: bold;
+                font-weight: 900 !important;
             }
         }
     </style>
@@ -608,6 +621,10 @@
                     <span>Subtotal dos Itens:</span>
                     <span id="resumo-subtotal">R$ 0,00</span>
                 </div>
+                <div class="resumo-linha" id="linha-resumo-acrescimo" style="display: none; color: #FBBF24;">
+                    <span id="label-resumo-acrescimo">Acréscimo:</span>
+                    <span id="resumo-acrescimo">R$ 0,00</span>
+                </div>
                 <div class="resumo-linha">
                     <span>Taxa de Entrega:</span>
                     <span id="resumo-taxa">R$ 0,00</span>
@@ -630,38 +647,38 @@
         </form>
     </div>
 
-    <!-- CUPOM OTIMIZADO PARA IMPRESSORA TÉRMICA -->
+    <!-- CUPOM OTIMIZADO PARA MAQUINETA DE CARTÃO (58MM / 48MM ÚTIL) -->
     <div id="cupom-gerado">
-        <div style="text-align: center; font-weight: bold; font-size: 15px; margin-bottom: 2px;">
+        <div style="text-align: center; font-size: 13px;" class="bold">
             NINHA DELIVERY
         </div>
-        <div style="text-align: center; font-size: 11px;">
-            WhatsApp: (81) 99463-2375<br>
-            Instagram: @ninha.delivery
+        <div style="text-align: center; font-size: 10px; margin-top: 1px;">
+            (81) 99463-2375<br>
+            @ninha.delivery
         </div>
         
         <div class="divisor"></div>
-        <div class="linha-cupom"><span class="bold">Data/Hora:</span> <span id="cupom-data-hora"></span></div>
+        <div class="linha-cupom"><span class="bold">Data:</span> <span id="cupom-data-hora"></span></div>
         <div class="linha-cupom"><span class="bold">Cliente:</span> <span id="cupom-cliente"></span></div>
-        <div class="linha-cupom"><span class="bold">WhatsApp:</span> <span id="cupom-telefone"></span></div>
+        <div class="linha-cupom"><span class="bold">Tel:</span> <span id="cupom-telefone"></span></div>
         
         <div class="divisor"></div>
-        <div style="font-weight: bold; text-align: center; margin-bottom: 2px;">--- ENTREGA ---</div>
+        <div style="text-align: center;" class="bold">-- ENTREGA --</div>
         <div class="linha-cupom"><span id="cupom-endereco-completo"></span></div>
         <div class="linha-cupom"><span class="bold">Ref:</span> <span id="cupom-referencia"></span></div>
         
         <div class="divisor"></div>
-        <div style="font-weight: bold; text-align: center; margin-bottom: 2px;">--- ITENS ---</div>
+        <div style="text-align: center;" class="bold">-- ITENS --</div>
         <div id="cupom-lista-itens"></div> 
         
         <div class="divisor"></div>
-        <div class="linha-cupom"><span class="bold">Pagamento:</span> <span id="cupom-pagamento"></span></div>
+        <div class="linha-cupom"><span class="bold">Pag:</span> <span id="cupom-pagamento"></span></div>
         <div class="linha-cupom" id="linha-cupom-troco"><span class="bold">Troco p/:</span> R$ <span id="cupom-troco"></span></div>
-        <div class="linha-cupom">Taxa Entrega: R$ <span id="cupom-taxa"></span></div>
-        <div class="linha-cupom bold" style="font-size: 14px; margin-top: 4px;">TOTAL: R$ <span id="cupom-total"></span></div>
+        <div class="linha-cupom">Taxa: R$ <span id="cupom-taxa"></span></div>
+        <div class="linha-cupom bold" style="font-size: 12px; margin-top: 3px;">TOTAL: R$ <span id="cupom-total"></span></div>
         
         <div class="divisor"></div>
-        <div style="text-align: center; font-size: 11px; margin-top: 10px;">
+        <div style="text-align: center; font-size: 10px; margin-top: 6px;">
             Sabor que a gente ama,<br>no conforto da sua casa!
         </div>
     </div>
@@ -686,6 +703,18 @@
             return parseFloat(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
+        function aplicarRegraArredondamento(valor) {
+            let inteira = Math.floor(valor);
+            let centavos = valor - inteira;
+            centavos = Math.round(centavos * 100) / 100;
+            
+            if (centavos > 0.50) {
+                return Math.ceil(valor);
+            } else {
+                return Math.floor(valor);
+            }
+        }
+
         function tratarTroco() {
             const pagamentoSelecionado = document.querySelector('input[name="forma_pagamento"]:checked')?.value;
             const divTroco = document.getElementById('div-troco');
@@ -699,6 +728,8 @@
                 inputTroco.value = '';
                 document.getElementById('btn-imprimir').focus();
             }
+
+            atualizarResumoValores();
         }
 
         const camposNavegaveis = Array.from(document.querySelectorAll('.navegavel'));
@@ -810,13 +841,41 @@
             atualizarResumoValores();
         }
 
+        function obterTaxaPagamento() {
+            const pagamentoSelecionado = document.querySelector('input[name="forma_pagamento"]:checked')?.value;
+            if (pagamentoSelecionado === 'Cartão - Crédito') return { perc: 0.07, label: '(c/ acréscimo)' };
+            if (pagamentoSelecionado === 'Cartão - Débito') return { perc: 0.04, label: '(c/ acréscimo)' };
+            return { perc: 0, label: '' };
+        }
+
         function atualizarResumoValores() {
             let subtotal = carrinho.reduce((acc, item) => acc + item.valorTotal, 0);
-            let taxa = parseFloat(document.getElementById('taxa').value) || 0;
-            let total = subtotal + taxa;
+            let taxaEntrega = parseFloat(document.getElementById('taxa').value) || 0;
+            
+            const infoTaxa = obterTaxaPagamento();
+            let subtotalComAcrescimo = subtotal;
+            let valorAcrescimo = 0;
+
+            if (infoTaxa.perc > 0) {
+                let valorBruto = subtotal * (1 + infoTaxa.perc);
+                subtotalComAcrescimo = aplicarRegraArredondamento(valorBruto);
+                valorAcrescimo = subtotalComAcrescimo - subtotal;
+            }
+
+            let total = subtotalComAcrescimo + taxaEntrega;
             
             document.getElementById('resumo-subtotal').innerText = `R$ ${formatarMoeda(subtotal)}`;
-            document.getElementById('resumo-taxa').innerText = `R$ ${formatarMoeda(taxa)}`;
+            document.getElementById('resumo-taxa').innerText = `R$ ${formatarMoeda(taxaEntrega)}`;
+            
+            const linhaAcrescimo = document.getElementById('linha-resumo-acrescimo');
+            if (infoTaxa.perc > 0) {
+                linhaAcrescimo.style.display = 'flex';
+                document.getElementById('label-resumo-acrescimo').innerText = `Acréscimo ${infoTaxa.label}:`;
+                document.getElementById('resumo-acrescimo').innerText = `R$ ${formatarMoeda(valorAcrescimo)}`;
+            } else {
+                linhaAcrescimo.style.display = 'none';
+            }
+
             document.getElementById('resumo-total').innerText = `R$ ${formatarMoeda(total)}`;
         }
 
@@ -847,7 +906,14 @@
             document.getElementById('cupom-referencia').innerText = document.getElementById('referencia').value || '-';
             
             const pagamento = pagamentoChecked.value;
-            document.getElementById('cupom-pagamento').innerText = pagamento;
+            const infoTaxa = obterTaxaPagamento();
+            
+            // Se tiver taxa, imprime "Cartão - Crédito (c/ acréscimo)" sem a porcentagem numérica
+            if (infoTaxa.perc > 0) {
+                document.getElementById('cupom-pagamento').innerText = `${pagamento} ${infoTaxa.label}`;
+            } else {
+                document.getElementById('cupom-pagamento').innerText = pagamento;
+            }
             
             const trocoVal = document.getElementById('troco').value;
             const linhaTroco = document.getElementById('linha-cupom-troco');
@@ -872,13 +938,17 @@
                 `;
             });
 
-            const taxa = parseFloat(document.getElementById('taxa').value) || 0;
-            const totalFinal = subtotal + taxa;
+            const taxaEntrega = parseFloat(document.getElementById('taxa').value) || 0;
+            let subtotalComAcrescimo = subtotal;
+            if (infoTaxa.perc > 0) {
+                let valorBruto = subtotal * (1 + infoTaxa.perc);
+                subtotalComAcrescimo = aplicarRegraArredondamento(valorBruto);
+            }
+            const totalFinal = subtotalComAcrescimo + taxaEntrega;
 
-            document.getElementById('cupom-taxa').innerText = formatarMoeda(taxa);
+            document.getElementById('cupom-taxa').innerText = formatarMoeda(taxaEntrega);
             document.getElementById('cupom-total').innerText = formatarMoeda(totalFinal);
 
-            // Não altera o display via JS para não vazar na tela; a regra @media print cuida disso sozinha.
             setTimeout(() => {
                 window.print();
             }, 150);
